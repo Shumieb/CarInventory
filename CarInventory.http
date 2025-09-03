@@ -9,7 +9,7 @@ Content-Type: application/json
 {
     "make": "Toyota",
     "model": "Corola",
-    "isavailable": true,
+    "isavailable": false,
     "secret": "hide info"
 }
 
@@ -20,5 +20,19 @@ GET {{CarInventory_HostAddress}}/cars/2
 ###
 
 DELETE {{CarInventory_HostAddress}}/cars/2
+
+###
+
+PUT {{CarInventory_HostAddress}}/cars/2
+Content-Type: application/json
+{
+    "make": "Ford",
+    "model": "Fiesta",
+    "isavailable": false,
+    "secret": "hide info"
+}
+###
+
+GET {{CarInventory_HostAddress}}/cars/available
 
 ###

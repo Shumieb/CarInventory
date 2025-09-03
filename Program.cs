@@ -10,12 +10,11 @@ var app = builder.Build();
 RouteGroupBuilder cars = app.MapGroup("/cars");
 
 cars.MapGet("/", GetAllCars);
-
-cars.MapPost("/", CreateCar);
-
 cars.MapGet("/{id}", GetCar);
-
+cars.MapPost("/", CreateCar);
+cars.MapPut("/{id}", UpdateCar);
 cars.MapDelete("/{id}", DeleteCar);
+cars.MapGet("/available", GetAvailableCars);
 
 app.Run();
 
@@ -50,4 +49,26 @@ static async Task<IResult> DeleteCar(int id, CarDB db)
         return TypedResults.NoContent();
     }
     return TypedResults.NoContent();
+}
+
+static async Task<IResult> UpdateCar(int id, CarDTO carDTO, CarDB db)
+{
+    var car = await db.Cars.FindAsync(id);
+
+    if (car is null) return TypedResults.NotFound();
+
+    car.Make = carDTO.Make;
+    car.Make = carDTO.Make;
+    car.IsAvailable = carDTO.IsAvailable;
+
+    await db.SaveChangesAsync();
+    return TypedResults.Ok(new CarDTO(car));
+}
+
+static async Task<IResult> GetAvailableCars(CarDB db)
+{
+    return TypedResults.Ok(await db.Cars
+        .Where(x => x.IsAvailable)
+        .Select(x => new CarDTO(x))
+        .ToArrayAsync());
 }
